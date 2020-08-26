@@ -1,0 +1,53 @@
+---
+    - hosts: all
+      tasks:
+        - name: update system
+          apt:
+           update_cache: yes
+
+    - hosts: haproxy
+      tasks:
+        - name: install haproxy
+          apt:
+            name: haproxy
+            state: latest
+        - name: copy file configuration haproxy
+          template:
+            src: ./template/haproxy/haproxy.cfg.j2
+            dest: /etc/haproxy/haproxy.cfg
+            backup: yes
+            owner: root
+            group: root
+            mode: '0644'
+        - name: start haproxy
+          service:
+            name: haproxy
+            state: restarted
+
+    - hosts: webserver
+      tasks:
+        - name: install nginx
+          apt:
+            name: nginx
+            state: latest
+
+    - hosts: webserver1
+      tasks:
+        - name: copy file default page webserver1
+          template:
+            src: ./template/webserver1/index.html.j2
+            dest: /var/www/html/index.nginx-debian.html
+            owner: www-data
+            group: www-data
+            mode: '0755'
+
+    - hosts: webserver2
+      tasks:
+        - name: copy file default page webserver2
+          template:
+            src: ./template/webserver2/index.html.j2
+            dest: /var/www/html/index.nginx-debian.html
+            owner: www-data
+            group: www-data
+            mode: '0755'
+...

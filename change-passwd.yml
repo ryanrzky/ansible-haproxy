@@ -1,0 +1,12 @@
+---
+    - hosts: all
+      vars:
+        - uusername: root
+        - upassword: rootpasswd
+      tasks:
+        - name: change password root
+          user:
+            name: "{{uusername}}"
+            password: "{{upassword | password_hash('sha512')}}"
+            update_password: always
+...
